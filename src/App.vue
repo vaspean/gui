@@ -1,32 +1,159 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <h2 class="header">Кол-во сигналов : {{startInfo.numberOfString}} <br> Кол-во временных делений :
+      {{startInfo.numOfTime}}</h2>
+
+
+    <div>
+      <p>Точечные режимы:</p>
+      <input type="radio" id="radio_inverse" name="mode" value="2" v-model="mode" checked>
+      <label for="inverse">Инверсия</label>
+      <input type="radio" id="radio_toOne" name="mode" value="1" v-model="mode">
+      <label for="toOne">Логическая единица</label>
+      <input type="radio" id="radio_toZero" name="mode" value="0" v-model="mode">
+      <label for="toZero">Логический ноль</label>
     </div>
-    <router-view/>
+
+    <div>
+      <p>Режимы для всего сигнала:</p>
+      <input type="radio" id="radio_allToOne" name="mode" value="3" v-model="mode" checked>
+      <label for="inverse">Весь сигнал в единицу</label>
+      <input type="radio" id="radio_allToZero" name="mode" value="4" v-model="mode">
+      <label for="toOne">Весь сигнал в ноль</label>
+      <input type="radio" id="radio_allInvert" name="mode" value="5" v-model="mode">
+      <label for="toOne">Инвертировать сигнал</label>
+    </div>
+
+    <div>
+
+    </div>
+    <!-- <canvas class="testCanvas" id="testCanvas" width="150" height="150">Обновите браузер</canvas> -->
+    <!-- <h3>{{mainData}}</h3> -->
+    <div class="table">
+      <ul>
+        <li v-for="signal in mainData" :key="signal.name">
+          {{signal.name}}
+        </li>
+      </ul>
+      <div class="table__container">
+        
+        <table class="graph">
+          <tbody class="graph__body">
+            <tr v-for="signal in mainData" :key="signal.name" class="graph__tr">
+              <!-- <td class="signalName">{{signal.name}}
+                <button>⚙</button>
+              </td> -->
+              <td v-bind:class="{ isOne: value===1, isZero: value===0 }" class="signalValue"
+                v-for="(value,index) in signal.value" @click="interact(signal.id,index)">
+                <!-- {{value}} -->
+              </td>
+            </tr>
+            <tr>
+              <!-- <td>name/time</td> -->
+              <td class="signalTime" v-for="(timeCount,index) in startInfo.numOfTime">{{timeCount}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <a href="#" class="button15" @click="editDone">Отправить</a>
   </div>
 </template>
 
+<script>
+// (async()=> {
+// const response = await fetch(`../server/input.json`, {
+//       method: `GET`
+//     })
+// const input = await response.json();
+// })()
+
+const input = {"numOfStr": 5,"numOfTime": 10};
+
+
+let incomeArr = {
+  numOfStr: input.numOfStr,
+  numOfTime: input.numOfTime
+}
+
+let logicValuesArr = []
+
+for (let i = 0; i < incomeArr.numOfTime; i++) {
+  logicValuesArr.push(0)
+}
+
+let mainArray = [
+]
+
+for (let i = incomeArr.numOfStr; i > 0; i--) {
+  mainArray.push({ id: i, name: `Сигнал ${i}`, value: logicValuesArr })
+}
+
+export default {
+  data() {
+    return {
+      startInfo: {
+        numberOfString: incomeArr.numOfStr,
+        numOfTime: incomeArr.numOfTime
+      },
+      mainData: JSON.parse(JSON.stringify(mainArray)),
+      mode: 2
+    }
+  },
+  methods: {
+    interact: function (id, index) {
+      let varArray = this.mainData.find(item => item.id === id).value;
+      switch (parseInt(this.mode)) {
+        case 0:
+          varArray[index] = 0;
+          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          break;
+        case 1:
+          varArray[index] = 1;
+          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          break;
+        case 2:
+          varArray[index] === 0 ? varArray[index] = 1 : varArray[index] = 0;
+          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          break;
+        case 3:
+          for (let value in varArray) {
+            varArray[value] = 1
+          }
+          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          break;
+        case 4:
+          for (let value in varArray) {
+            varArray[value] = 0
+          }
+          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          break;
+        case 5:
+          for (let value in varArray) {
+            varArray[value] === 0 ? varArray[value] = 1 : varArray[value] = 0
+          }
+          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          break;
+      }
+    },
+    editDone: async function () {
+      // let push = await fetch('../output.json', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify(this.mainData)
+      // });
+      // const input = await push.json();
+      // console.log(input)
+      // let result = await response.json();
+      // alert(result.message);
+      //ОТПРАВИТЬ НА СЕРВЕР!!!!!!!!!
+      console.log(JSON.stringify(this.mainData))
+    }
+  }
+}
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>
