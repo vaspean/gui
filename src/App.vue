@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <h2 class="header">Кол-во сигналов : {{startInfo.numberOfString}} <br> Кол-во временных делений :
-      {{startInfo.numOfTime}}</h2>
+    <!--<h2 class="header">Кол-во сигналов : {{startInfo.numOfStr}} <br> Кол-во временных делений : {{startInfo.numOfTime}}</h2>-->
 
 
     <div>
@@ -61,45 +60,41 @@
 </template>
 
 <script>
-// (async()=> {
-// const response = await fetch(`../server/input.json`, {
-//       method: `GET`
-//     })
-// const input = await response.json();
-// })()
+import axios from 'axios';
 
-const input = {"numOfStr": 5,"numOfTime": 10};
-
-
-let incomeArr = {
-  numOfStr: input.numOfStr,
-  numOfTime: input.numOfTime
-}
-
-let logicValuesArr = []
-
-for (let i = 0; i < incomeArr.numOfTime; i++) {
-  logicValuesArr.push(0)
-}
-
-let mainArray = [
-]
-
-for (let i = incomeArr.numOfStr; i > 0; i--) {
-  mainArray.push({ id: i, name: `Сигнал ${i}`, value: logicValuesArr })
-}
 
 export default {
   data() {
     return {
       startInfo: {
-        numberOfString: incomeArr.numOfStr,
-        numOfTime: incomeArr.numOfTime
+        numOfStr: 0,
+        numOfTime: 0
       },
-      mainData: JSON.parse(JSON.stringify(mainArray)),
-      mode: 2
+      mainData: null,
+      mode: 2,
     }
   },
+  created() {
+    axios.get('../server/input.json').then(input=>{
+      let incomeArr = {numOfStr: input.data.numOfStr, numOfTime: input.data.numOfTime};
+      this.startInfo = {
+        numOfStr: incomeArr.numOfStr,
+        numOfTime: incomeArr.numOfTime
+      }
+      let logicValuesArr = [];
+      for (let i = 0; i < incomeArr.numOfTime; i++) {
+        logicValuesArr.push(0)
+      };
+      let mainArray = [];
+      for (let i = incomeArr.numOfStr; i > 0; i--) {
+       mainArray.push({ id: i, name: `Сигнал ${i}`, value: logicValuesArr })
+      };
+      this.mainData = JSON.parse(JSON.stringify(mainArray));
+    });
+  },
+
+
+
   methods: {
     interact: function (id, index) {
       let varArray = this.mainData.find(item => item.id === id).value;
@@ -137,18 +132,14 @@ export default {
       }
     },
     editDone: async function () {
-      // let push = await fetch('../output.json', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify(this.mainData)
-      // });
-      // const input = await push.json();
-      // console.log(input)
-      // let result = await response.json();
-      // alert(result.message);
-      //ОТПРАВИТЬ НА СЕРВЕР!!!!!!!!!
+
+      ////////////////////////ОТПРАВИТЬ НА СЕРВЕР.......................
+      // axios.put(`../server/output.json`,JSON.stringify(this.mainData))
+      // axios({
+      //   method: 'post',
+      //   url: '../server/output.json',
+      //   data: {title: JSON.stringify(this.mainData)} 
+      // })
       console.log(JSON.stringify(this.mainData))
     }
   }
