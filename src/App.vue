@@ -3,24 +3,34 @@
     <!--<h2 class="header">Кол-во сигналов : {{startInfo.numOfStr}} <br> Кол-во временных делений : {{startInfo.numOfTime}}</h2>-->
 
 
-    <div>
+    <div class="gui__modes">
       <p>Точечные режимы:</p>
-      <input type="radio" id="radio_inverse" name="mode" value="2" v-model="mode" checked>
-      <label for="inverse">Инверсия</label>
-      <input type="radio" id="radio_toOne" name="mode" value="1" v-model="mode">
-      <label for="toOne">Логическая единица</label>
-      <input type="radio" id="radio_toZero" name="mode" value="0" v-model="mode">
-      <label for="toZero">Логический ноль</label>
+
+      <div class="form_radio_btn">
+        <input type="radio" id="radio_inverse" name="mode" value="2" v-model="mode" checked>
+        <label for="radio_inverse">Инверсия</label>
+      </div>
+
+      <div class="form_radio_btn">
+        <input type="radio" id="radio_toOne" name="mode" value="1" v-model="mode">
+        <label for="radio_toOne">Логическая единица</label>
+      </div>
+      
+      <div class="form_radio_btn">
+        <input type="radio" id="radio_toZero" name="mode" value="0" v-model="mode">
+        <label for="radio_toZero">Логический ноль</label>
+      </div>
+
     </div>
 
     <div>
       <p>Режимы для всего сигнала:</p>
       <input type="radio" id="radio_allToOne" name="mode" value="3" v-model="mode" checked>
-      <label for="inverse">Весь сигнал в единицу</label>
+      <label for="radio_inverse">Весь сигнал в единицу</label>
       <input type="radio" id="radio_allToZero" name="mode" value="4" v-model="mode">
-      <label for="toOne">Весь сигнал в ноль</label>
+      <label for="radio_toOne">Весь сигнал в ноль</label>
       <input type="radio" id="radio_allInvert" name="mode" value="5" v-model="mode">
-      <label for="toOne">Инвертировать сигнал</label>
+      <label for="radio_toOne">Инвертировать сигнал</label>
     </div>
 
     <div>
@@ -31,7 +41,11 @@
     <div class="table">
       <ul>
         <li v-for="signal in mainData" :key="signal.name">
-          {{signal.name}}
+          <div>
+            <p>
+              {{signal.name}}
+            </p>
+          </div>
         </li>
       </ul>
       <div class="table__container">
