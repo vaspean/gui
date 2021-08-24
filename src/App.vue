@@ -25,7 +25,7 @@
 
     </ul>
 
-    <div>
+   <!-- <div>
       <p>Режимы для всего сигнала:</p>
       <input type="radio" id="radio_allToOne" name="mode" value="3" v-model="mode" checked>
       <label for="radio_inverse">Весь сигнал в единицу</label>
@@ -33,7 +33,7 @@
       <label for="radio_toOne">Весь сигнал в ноль</label>
       <input type="radio" id="radio_allInvert" name="mode" value="5" v-model="mode">
       <label for="radio_toOne">Инвертировать сигнал</label>
-    </div>
+    </div>-->
 
     <div>
 
@@ -42,16 +42,13 @@
     <!-- <h3>{{mainData}}</h3> -->
     <div class="table">
       <ul>
-        <li v-for="signal in mainData" :key="signal.name">
-          <div>
-            <p>
+        <li class="signal__item" v-for="signal in mainData" :key="signal.name">
+            <p class="signalName">
               {{signal.name}}
             </p>
-          </div>
         </li>
       </ul>
-      <div class="table__container">
-        
+      <div class="table__container">   
         <table class="graph">
           <tbody class="graph__body">
             <tr v-for="signal in mainData" :key="signal.name" class="graph__tr">
@@ -71,7 +68,7 @@
         </table>
       </div>
     </div>
-    <a href="#" class="button15" @click="editDone">Отправить</a>
+    <a href="#" class="button15" @click.prevent="editDone">Отправить</a>
   </div>
 </template>
 
