@@ -3,25 +3,27 @@
     <!--<h2 class="header">Кол-во сигналов : {{startInfo.numOfStr}} <br> Кол-во временных делений : {{startInfo.numOfTime}}</h2>-->
 
 
-    <div class="gui__modes">
-      <p>Точечные режимы:</p>
+    <ul class="gui__modes">
 
-      <div class="form_radio_btn">
+      <li class="form_radio_btn">
         <input type="radio" id="radio_inverse" name="mode" value="2" v-model="mode" checked>
-        <label for="radio_inverse">Инверсия</label>
-      </div>
+        <label class="radio__label radio__label_inverse" for="radio_inverse">
+        <span>¬</span></label>
+      </li>
 
-      <div class="form_radio_btn">
+      <li class="form_radio_btn">
         <input type="radio" id="radio_toOne" name="mode" value="1" v-model="mode">
-        <label for="radio_toOne">Логическая единица</label>
-      </div>
+        <label class="radio__label radio__label_toOne" for="radio_toOne">
+        <span>1</span></label>
+      </li>
       
-      <div class="form_radio_btn">
+      <li class="form_radio_btn">
         <input type="radio" id="radio_toZero" name="mode" value="0" v-model="mode">
-        <label for="radio_toZero">Логический ноль</label>
-      </div>
+        <label class="radio__label radio__label_toZero" for="radio_toZero">
+        <span>0</span></label>
+      </li>
 
-    </div>
+    </ul>
 
     <div>
       <p>Режимы для всего сигнала:</p>

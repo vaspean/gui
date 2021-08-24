@@ -1,8 +1,49 @@
+@font-face {
+    font-family: 'Montserrat';
+    src:
+            url('/fonts/Montserrat-Regular.woff2') format('woff2'),
+            url('/fonts/Montserrat-Regular.woff') format('woff');
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src:
+            url('/fonts/Montserrat-SemiBold.woff2') format('woff2'),
+            url('/fonts/Montserrat-SemiBold.woff') format('woff');
+    font-display: swap;
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src:
+            url('/fonts/Montserrat-Bold.woff2') format('woff2'),
+            url('/fonts/Montserrat-Bold.woff') format('woff');
+    font-display: swap;
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Montserrat';
+    src:
+            url('/fonts/Montserrat-ExtraBold.woff2') format('woff2'),
+            url('/fonts/Montserrat-ExtraBold.woff') format('woff');
+    font-display: swap;
+    font-weight: 800;
+    font-style: normal;
+}
+
 body {
-    /* font-family: 'Montserrat' !important; */
+    margin: 0;
+    font-family: 'Montserrat';
+    background-color: #F5F6F9;
     font-family: arial,sans-serif;
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 600;
     color: rgb(68,68,68);
 }
 
@@ -20,6 +61,11 @@ ul {
     position: sticky;
     top: 0;
     background-color: white;
+    display: flex;
+}
+
+.gui__modes p {
+    margin: 0;
 }
 
 /* РАДИОКНОПКИ РЕЖИМОВ */
@@ -27,26 +73,49 @@ ul {
 	display: inline-block;
 	margin-right: 10px;
 }
+
 .form_radio_btn input[type=radio] {
 	display: none;
 }
 .form_radio_btn label {
-    min-height: 50px;
+    border-top: 5px white solid;
+    height: 65px;
+    width: 39px;
+    /* min-height: 50px; */
 	display: inline-block;
 	cursor: pointer;
 	padding: 0px 15px;
 	line-height: 34px;
-	border: 1px solid #999;
-	border-radius: 6px;
+	/* border: 1px solid #999; */
+	/* border-radius: 6px; */
 	user-select: none;
+    vertical-align: middle;
 }
 .form_radio_btn input[type=radio]:checked + label {
-	background: #ffe0a6;
+    border-top: 5px #8F00FF solid;
+    background: rgba(143, 0, 255, 0.1);
+    color: #8F00FF;
+	/* background: #ffe0a6; */
+}
+
+.radio__label {
+    position: relative;
+    font-size: 30px;
+    font-weight: 800;
+    color: rgba(0, 0, 0, 0.2);
+}
+
+.radio__label span {
+    position: absolute;
+    top: 21%;
+    left: 33%;
 }
  
 /* Hover */
 .form_radio_btn label:hover {
-	color: #666;
+    border-top: 5px rgba(76, 0, 255, 0.4) solid;
+    background: rgba(143, 0, 255, 0.02);
+	color: rgba(76, 0, 255, 0.4);
 }
 /* РАДИОКНОПКИ РЕЖИМОВ */
 
