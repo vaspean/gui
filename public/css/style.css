@@ -69,7 +69,6 @@ body {
     background-color: var(--color-background-main);
     font-size: 20px;
     font-weight: 600;
-    /* color: rgb(68,68,68); */
 }
 
 a {
@@ -191,7 +190,6 @@ ul {
 }
 
 .table__container {
-    /* overflow-x: overlay; */
     overflow-x: scroll;
     margin: 0;
     border-left: 3px var(--color-main) solid;
@@ -225,7 +223,6 @@ td {
 .signalTime {
     height: 30px;
     background-color: var(--color-main-light);
-    /* background-color: rgb(211, 211, 211); */
 }
 
 .signalValue {
@@ -236,7 +233,6 @@ td {
 }
 
 .isOne {
-    /* background-image: url(../img/ftline-normal-end.svg); */
     background-image: url(../img/svg-editor-image.svg);
     background-repeat: no-repeat;
     background-size: 120%;
@@ -244,7 +240,6 @@ td {
 }
 
 .isZero {
-    /* background-image: url(../img/ftline-normal-end.svg); */
     background-image: url(../img/svg-editor-image.svg);
     background-repeat: no-repeat;
     background-size: 120%;
@@ -253,7 +248,7 @@ td {
 
 /* кнопка */
 
-.button15 {
+.button15_send {
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
@@ -270,12 +265,59 @@ td {
     border: 3px var(--color-main) solid;
     color: var(--color-main);
     transition: transform ease-in-out 0.02s;
-    /* border: 3px var(--color-main) solid; */
 }
 .button15:hover {
     opacity: 0.8;
 }
 
-.button15:active {
+.button15_send:active {
     transform:  translate(-50%,2px);
+}
+/* TOOLBAR */
+.toolbar {
+    /* display: none; */
+    border: 2px var(--color-main) solid;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 20px;
+    background: var(--color-white);
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 99;
+}
+
+.toolbar ul {
+    display: flex;
+}
+
+.toolbar p {
+    text-align: center;
+}
+
+.toolbar .button15 {
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 5px 0;
+}
+
+.toolbar .button15:active {
+    /* transform:  translate(-30%,2px); */
+}
+
+.generator {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.generator p {
+    /* width: 100%; */
+}
+
+.generator input {
+    width: 40px;
+}
+
+.generator .button15 {
+    margin-top: 20px; 
+    width: 50%;
 }

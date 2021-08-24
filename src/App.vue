@@ -22,18 +22,30 @@
         <label class="radio__label radio__label_toZero" for="radio_toZero">
         <span>0</span></label>
       </li>
-
     </ul>
 
-   <!-- <div>
-      <p>Режимы для всего сигнала:</p>
-      <input type="radio" id="radio_allToOne" name="mode" value="3" v-model="mode" checked>
+   <div class="toolbar">
+      <span>*Сигнал №*</span>
+      <ul>
+        <li><a href="#" class="button15">Инвертировать</a></li>
+        <li><a href="#" class="button15">Задать в 1</a></li>
+        <li><a href="#" class="button15">Задать в 0</a></li>
+       <!--  <li class="generator">
+          <p>Генератор</p>
+          <label>Кол-во единиц</label>
+          <input type="number">
+          <label>Кол-во нулей</label>
+          <input type="number">
+          <a href="#" class="button15">Задать</a>
+        </li>-->
+      </ul> 
+     <!-- <input type="radio" id="radio_allToOne" name="mode" value="3" v-model="mode" checked>
       <label for="radio_inverse">Весь сигнал в единицу</label>
       <input type="radio" id="radio_allToZero" name="mode" value="4" v-model="mode">
       <label for="radio_toOne">Весь сигнал в ноль</label>
       <input type="radio" id="radio_allInvert" name="mode" value="5" v-model="mode">
-      <label for="radio_toOne">Инвертировать сигнал</label>
-    </div>-->
+      <label for="radio_toOne">Инвертировать сигнал</label>-->
+    </div>
 
     <div>
 
@@ -68,7 +80,7 @@
         </table>
       </div>
     </div>
-    <a href="#" class="button15" @click.prevent="editDone">Отправить</a>
+    <a href="#" class="button15 button15_send" @click.prevent="editDone">Отправить</a>
   </div>
 </template>
 
