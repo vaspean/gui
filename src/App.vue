@@ -6,19 +6,19 @@
     <ul class="gui__modes">
 
       <li class="form_radio_btn">
-        <input type="radio" id="radio_inverse" name="mode" value="2" v-model="mode" checked>
+        <input type="radio" id="radio_inverse" name="mode" value="2" v-model="modeClick" checked>
         <label class="radio__label radio__label_inverse" for="radio_inverse">
         <span>¬</span></label>
       </li>
 
       <li class="form_radio_btn">
-        <input type="radio" id="radio_toOne" name="mode" value="1" v-model="mode">
+        <input type="radio" id="radio_toOne" name="mode" value="1" v-model="modeClick">
         <label class="radio__label radio__label_toOne" for="radio_toOne">
         <span>1</span></label>
       </li>
       
       <li class="form_radio_btn">
-        <input type="radio" id="radio_toZero" name="mode" value="0" v-model="mode">
+        <input type="radio" id="radio_toZero" name="mode" value="0" v-model="modeClick">
         <label class="radio__label radio__label_toZero" for="radio_toZero">
         <span>0</span></label>
       </li>
@@ -31,8 +31,8 @@
         <li><a href="" class="button15" @click.prevent="allInvert">Инвертировать</a></li>
         <li><a href="" class="button15" @click.prevent="allToOne">Задать в 1</a></li>
         <li><a href="" class="button15" @click.prevent="allToZero">Задать в 0</a></li>
-       <!--  <li class="generator">
-          <p>Генератор</p>
+         <!--<li class="generator">
+          <span>Генератор</span>
           <label>Кол-во единиц</label>
           <input type="number">
           <label>Кол-во нулей</label>
@@ -40,6 +40,16 @@
           <a href="#" class="button15">Задать</a>
         </li>-->
       </ul> 
+      <div class="generator">
+          <span>Генератор:</span>
+          <label for="generatorInputOne">Кол-во единиц</label>
+          <input type="number" id="generatorInputOne" v-model="generatorCountOne">
+          <label for="generatorInputZero">Кол-во нулей</label>
+          <input type="number" id="generatorInputZero" v-model="generatorCountZero">
+          <label for="generatorCheckbox">Начать с 1</label>
+          <input type="checkbox" id="generatorCheckbox" v-model="generatorStartFromOne">
+          <a href="#" class="button15" @click.prevent="generatorClick">Задать</a>
+      </div>
     </div>
 
     <div>
@@ -84,8 +94,11 @@ export default {
         numOfTime: 0
       },
       mainData: null,
-      mode: 2,
-      signalSelectedArr: []
+      modeClick: 2,
+      signalSelectedArr: [],
+      generatorCountZero: 0,
+      generatorCountOne: 0,
+      generatorStartFromOne: false,
     }
   },
   created() {
@@ -112,7 +125,7 @@ export default {
   methods: {
     interact: function (id, index) {
       let varArray = this.mainData.find(item => item.id === id).value;
-      switch (parseInt(this.mode)) {
+      switch (parseInt(this.modeClick)) {
         case 0:
           varArray[index] = 0;
           this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
@@ -165,6 +178,9 @@ export default {
           this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForSignal));
         }
       }
+    },
+    generatorClick: function(){
+        console.log(this.generatorCountOne,this.generatorCountZero,this.generatorStartFromOne)
     },
     editDone: async function () {
 
