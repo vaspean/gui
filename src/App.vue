@@ -177,14 +177,14 @@ export default {
             for (let i=0;i<this.generatorCountOne;i++) {
               varArrayForGenerator.push(1);
             }
-            for (let i=0;i<this.generatorCountZero;i++) {
+            for (let k=0;k<this.generatorCountZero;k++) {
               varArrayForGenerator.push(0);
             }
           } else {
             for (let i=0;i<this.generatorCountZero;i++) {
               varArrayForGenerator.push(0);
             }
-            for (let i=0;i<this.generatorCountOne;i++) {
+            for (let k=0;k<this.generatorCountOne;k++) {
               varArrayForGenerator.push(1);
             }
           }
@@ -192,7 +192,7 @@ export default {
         varArrayForGenerator.splice(valueLength,varArrayForGenerator.length-valueLength);
         for (let i = 0; i < this.mainData.length; i++) { 
           if (this.signalSelectedArr.includes(this.mainData[i].id)) { 
-            this.mainData[i].value = varArrayForGenerator;
+            this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForGenerator));
           }
         }
     },
