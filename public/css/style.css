@@ -176,17 +176,25 @@ ul {
 }
 
 .table ul {
-    padding-left: 10px;
-    padding-right: 10px;
-    min-width: 125px;
+    /* padding-left: 10px;
+    padding-right: 10px; */
+    min-width: 145px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     padding-bottom: 53px;
+    /* border-top: 1px var(--color-white) solid; */
 }
 
+
+
 .table ul li {
-    height: 81px;
+    padding: 0 20px;
+    height: 81.5px;
+    cursor: pointer;
+}
+
+.table ul li:first-child {
+    height: 82.5px;
 }
 
 .table__container {
@@ -218,6 +226,18 @@ td {
     position: absolute;
     top: 11%;
     left: 1%;
+}
+
+.signal__item:hover {
+    /* background-color: var(--color-main-light-low-opacity); */
+    opacity: 0.5;
+}
+.signal__item:active {
+    background-color: var(--color-main-light);
+}
+.signalName_selected {
+    background-color: var(--color-main);
+    color: var(--color-white);
 }
 
 .signalTime {
@@ -286,11 +306,27 @@ td {
     z-index: 99;
 }
 
+.toolbar span{
+    margin-right: 10px;
+}
+
+.clearSelected {
+    color: var(--color-main);
+    font-size: 24px;
+    cursor: pointer;
+}
+
 .toolbar ul {
+    margin-top: 5px;
     display: flex;
 }
 
-.toolbar p {
+.toolbar ul li {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.toolbar span {
     text-align: center;
 }
 

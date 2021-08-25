@@ -24,12 +24,13 @@
       </li>
     </ul>
 
-   <div class="toolbar">
-      <span>*Сигнал №*</span>
+   <div class="toolbar" v-show="signalSelectedArr.length > 0">
+      <span>Выбрано {{signalSelectedArr.length}} шт</span>
+      <span class="clearSelected" @click="clearSelected">❎</span>
       <ul>
-        <li><a href="#" class="button15">Инвертировать</a></li>
-        <li><a href="#" class="button15">Задать в 1</a></li>
-        <li><a href="#" class="button15">Задать в 0</a></li>
+        <li><a href="" class="button15" @click.prevent="allInvert">Инвертировать</a></li>
+        <li><a href="" class="button15" @click.prevent="allToOne">Задать в 1</a></li>
+        <li><a href="" class="button15" @click.prevent="allToZero">Задать в 0</a></li>
        <!--  <li class="generator">
           <p>Генератор</p>
           <label>Кол-во единиц</label>
@@ -39,22 +40,14 @@
           <a href="#" class="button15">Задать</a>
         </li>-->
       </ul> 
-     <!-- <input type="radio" id="radio_allToOne" name="mode" value="3" v-model="mode" checked>
-      <label for="radio_inverse">Весь сигнал в единицу</label>
-      <input type="radio" id="radio_allToZero" name="mode" value="4" v-model="mode">
-      <label for="radio_toOne">Весь сигнал в ноль</label>
-      <input type="radio" id="radio_allInvert" name="mode" value="5" v-model="mode">
-      <label for="radio_toOne">Инвертировать сигнал</label>-->
     </div>
 
     <div>
 
     </div>
-    <!-- <canvas class="testCanvas" id="testCanvas" width="150" height="150">Обновите браузер</canvas> -->
-    <!-- <h3>{{mainData}}</h3> -->
     <div class="table">
       <ul>
-        <li class="signal__item" v-for="signal in mainData" :key="signal.name">
+        <li :class="{signalName_selected: signalSelectedArr.includes(signal.id)}" class="signal__item" v-for="signal in mainData" :key="signal.name" @click.prevent="signalSelect(signal.id)">
             <p class="signalName">
               {{signal.name}}
             </p>
@@ -64,16 +57,11 @@
         <table class="graph">
           <tbody class="graph__body">
             <tr v-for="signal in mainData" :key="signal.name" class="graph__tr">
-              <!-- <td class="signalName">{{signal.name}}
-                <button>⚙</button>
-              </td> -->
-              <td v-bind:class="{ isOne: value===1, isZero: value===0 }" class="signalValue"
+              <td :class="{ isOne: value===1, isZero: value===0 }" class="signalValue"
                 v-for="(value,index) in signal.value" @click="interact(signal.id,index)">
-                <!-- {{value}} -->
               </td>
             </tr>
             <tr>
-              <!-- <td>name/time</td> -->
               <td class="signalTime" v-for="(timeCount,index) in startInfo.numOfTime">{{timeCount}}</td>
             </tr>
           </tbody>
@@ -97,6 +85,7 @@ export default {
       },
       mainData: null,
       mode: 2,
+      signalSelectedArr: []
     }
   },
   created() {
@@ -136,24 +125,45 @@ export default {
           varArray[index] === 0 ? varArray[index] = 1 : varArray[index] = 0;
           this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
           break;
-        case 3:
-          for (let value in varArray) {
-            varArray[value] = 1
+      }
+    },
+    signalSelect: function(signal) {
+      this.signalSelectedArr.includes(signal) ? this.signalSelectedArr.splice(this.signalSelectedArr.indexOf(signal),1) : this.signalSelectedArr.push(signal);
+    },
+    clearSelected: function() {
+      this.signalSelectedArr = [];
+    },
+    allInvert: function() {
+      for (let i = 0; i < this.mainData.length; i++) {
+        if (this.signalSelectedArr.includes(this.mainData[i].id)) {
+          let varArrayForSignal = this.mainData[i].value;
+          for (let value in varArrayForSignal) {
+            varArrayForSignal[value] === 0 ? varArrayForSignal[value] = 1 : varArrayForSignal[value] = 0
           }
-          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
-          break;
-        case 4:
-          for (let value in varArray) {
-            varArray[value] = 0
+          this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForSignal));
+        }
+      }
+    },
+    allToOne: function() {
+      for (let i = 0; i < this.mainData.length; i++) {
+        if (this.signalSelectedArr.includes(this.mainData[i].id)) {
+          let varArrayForSignal = this.mainData[i].value;
+          for (let value in varArrayForSignal) {
+            varArrayForSignal[value] = 1;
           }
-          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
-          break;
-        case 5:
-          for (let value in varArray) {
-            varArray[value] === 0 ? varArray[value] = 1 : varArray[value] = 0
+          this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForSignal));
+        }
+      }
+    },
+    allToZero: function() {
+       for (let i = 0; i < this.mainData.length; i++) {
+        if (this.signalSelectedArr.includes(this.mainData[i].id)) {
+          let varArrayForSignal = this.mainData[i].value;
+          for (let value in varArrayForSignal) {
+            varArrayForSignal[value] = 0;
           }
-          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
-          break;
+          this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForSignal));
+        }
       }
     },
     editDone: async function () {
