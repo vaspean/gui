@@ -1,8 +1,6 @@
 <template>
   <div id="app">
     <!--<h2 class="header">Кол-во сигналов : {{startInfo.numOfStr}} <br> Кол-во временных делений : {{startInfo.numOfTime}}</h2>-->
-
-
     <ul class="gui__modes">
 
       <li class="form_radio_btn">
@@ -31,21 +29,13 @@
         <li><a href="" class="button15" @click.prevent="allInvert">Инвертировать</a></li>
         <li><a href="" class="button15" @click.prevent="allToOne">Задать в 1</a></li>
         <li><a href="" class="button15" @click.prevent="allToZero">Задать в 0</a></li>
-         <!--<li class="generator">
-          <span>Генератор</span>
-          <label>Кол-во единиц</label>
-          <input type="number">
-          <label>Кол-во нулей</label>
-          <input type="number">
-          <a href="#" class="button15">Задать</a>
-        </li>-->
       </ul> 
       <div class="generator">
           <span>Генератор:</span>
-          <label for="generatorInputOne">Кол-во единиц</label>
-          <input type="number" id="generatorInputOne" v-model="generatorCountOne">
           <label for="generatorInputZero">Кол-во нулей</label>
           <input type="number" id="generatorInputZero" v-model="generatorCountZero">
+          <label for="generatorInputOne">Кол-во единиц</label>
+          <input type="number" id="generatorInputOne" v-model="generatorCountOne">
           <label for="generatorCheckbox">Начать с 1</label>
           <input type="checkbox" id="generatorCheckbox" v-model="generatorStartFromOne">
           <a href="#" class="button15" @click.prevent="generatorClick">Задать</a>
@@ -85,7 +75,6 @@
 <script>
 import axios from 'axios';
 
-
 export default {
   data() {
     return {
@@ -96,8 +85,8 @@ export default {
       mainData: null,
       modeClick: 2,
       signalSelectedArr: [],
-      generatorCountZero: 0,
-      generatorCountOne: 0,
+      generatorCountZero: 1,
+      generatorCountOne: 1,
       generatorStartFromOne: false,
     }
   },
@@ -119,9 +108,6 @@ export default {
       this.mainData = JSON.parse(JSON.stringify(mainArray));
     });
   },
-
-
-
   methods: {
     interact: function (id, index) {
       let varArray = this.mainData.find(item => item.id === id).value;
@@ -180,7 +166,35 @@ export default {
       }
     },
     generatorClick: function(){
-        console.log(this.generatorCountOne,this.generatorCountZero,this.generatorStartFromOne)
+        if (this.generatorCountOne < 1 || this.generatorCountZero < 1) {
+          alert('Пожалуйста, выставите положительные числа для генератора')
+         return
+        }
+        let valueLength = this.startInfo.numOfTime;
+        let varArrayForGenerator = [];
+        while (varArrayForGenerator.length<=valueLength) {
+          if (this.generatorStartFromOne) {
+            for (let i=0;i<this.generatorCountOne;i++) {
+              varArrayForGenerator.push(1);
+            }
+            for (let i=0;i<this.generatorCountZero;i++) {
+              varArrayForGenerator.push(0);
+            }
+          } else {
+            for (let i=0;i<this.generatorCountZero;i++) {
+              varArrayForGenerator.push(0);
+            }
+            for (let i=0;i<this.generatorCountOne;i++) {
+              varArrayForGenerator.push(1);
+            }
+          }
+        }
+        varArrayForGenerator.splice(valueLength,varArrayForGenerator.length-valueLength);
+        for (let i = 0; i < this.mainData.length; i++) { 
+          if (this.signalSelectedArr.includes(this.mainData[i].id)) { 
+            this.mainData[i].value = varArrayForGenerator;
+          }
+        }
     },
     editDone: async function () {
 
