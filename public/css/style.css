@@ -144,7 +144,7 @@ ul {
 }
 
 .radio__label_toOne span {
-    top: 13px;
+    top: 12px;
     left: 41%;
 }
  
@@ -162,6 +162,11 @@ ul {
 .form_radio_btn .radio__label_toOne:hover span {
     top: 16px;
 } 
+
+.radio__label_editor span {
+    top: 13px;
+    left: 27%;
+}
 /* РАДИОКНОПКИ РЕЖИМОВ */
 
 .header {
@@ -181,7 +186,7 @@ ul {
     min-width: 145px;
     display: flex;
     flex-direction: column;
-    padding-bottom: 53px;
+    /* padding-bottom: 53px; */
     /* border-top: 1px var(--color-white) solid; */
 }
 
@@ -240,9 +245,19 @@ td {
     color: var(--color-white);
 }
 
+.table {
+    
+}
+
+.table__select_all {
+    text-align: center;
+    position: relative;
+    height: 20px !important; 
+}
+
 .signalTime {
     height: 30px;
-    background-color: var(--color-main-light);
+    background-color: var(--color-main-low-opacity);
 }
 
 .signalValue {
@@ -264,6 +279,10 @@ td {
     background-repeat: no-repeat;
     background-size: 120%;
     background-position: -6px 29px;
+}
+
+.isSelected {
+    background-color: var(--color-main-light);
 }
 
 /* кнопка */
@@ -386,4 +405,21 @@ td {
 .generator .button15 {
     /* margin-top: 20px;  */
     /* width: 50%; */
+}
+
+.button15__signal_name {
+    width: 135px;
+    padding: 3px 5px;
+    /* background-color: unset !important; */
+    margin: 0;
+    /* margin-right: -1px; */
+    /* margin-left: 1px; */
+    font-weight: 600;
+    top: 0;
+    left: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom: 0;
+    box-shadow: none;
+    position: absolute;
 }

@@ -20,6 +20,12 @@
         <label class="radio__label radio__label_toZero" for="radio_toZero">
         <span>0</span></label>
       </li>
+
+      <li class="form_radio_btn">
+        <input type="radio" id="radio_editor" name="mode" value="3" v-model="modeClick">
+        <label class="radio__label radio__label_editor" for="radio_editor">
+        <span>✎</span></label>
+      </li>
     </ul>
 
    <div class="toolbar" v-show="signalSelectedArr.length > 0">
@@ -52,12 +58,13 @@
               {{signal.name}}
             </p>
         </li>
+        <li class="table__select_all"><a href="" class="button15 button15__signal_name" @click.prevent="selectAll">Выбрать все</a> </li>
       </ul>
       <div class="table__container">   
         <table class="graph">
           <tbody class="graph__body">
             <tr v-for="signal in mainData" :key="signal.name" class="graph__tr">
-              <td :class="{ isOne: value===1, isZero: value===0 }" class="signalValue"
+              <td :class="{ isOne: value===1, isZero: value===0, isSelected: signalSelectedArr.includes(signal.id) }" class="signalValue"
                 v-for="(value,index) in signal.value" @click="interact(signal.id,index)">
               </td>
             </tr>
@@ -88,15 +95,19 @@ export default {
       generatorCountZero: 1,
       generatorCountOne: 1,
       generatorStartFromOne: false,
+      pressedAltZ: false,
     }
   },
   created() {
     axios.get('../server/input.json').then(input=>{
       let incomeArr = {numOfStr: input.data.numOfStr, numOfTime: input.data.numOfTime};
-      this.startInfo = {
-        numOfStr: incomeArr.numOfStr,
-        numOfTime: incomeArr.numOfTime
-      }
+
+      // this.startInfo = {
+      //   numOfStr: incomeArr.numOfStr,
+      //   numOfTime: incomeArr.numOfTime
+      // }
+      this.$set(this.startInfo,'numOfStr', incomeArr.numOfStr);
+      this.$set(this.startInfo,'numOfTime', incomeArr.numOfTime);
       let logicValuesArr = [];
       for (let i = 0; i < incomeArr.numOfTime; i++) {
         logicValuesArr.push(0)
@@ -107,7 +118,23 @@ export default {
       };
       this.mainData = JSON.parse(JSON.stringify(mainArray));
     });
+   
   },
+  mounted() {
+  //alt+z
+      window.addEventListener('keydown', (event) => {
+        if (event.key == 'z' && event.altKey && (this.pressedAltZ != true)) {
+          console.log("Alt + Z pressed!");
+          this.pressedAltZ=!this.pressedAltZ
+        }
+      });
+      window.addEventListener('keyup', (event) => {
+        if (event.key == 'z' && event.altKey && (this.pressedAltZ != false)) {
+          console.log("Alt + Z unpressed!");
+          this.pressedAltZ=!this.pressedAltZ
+        }
+      });
+    },
   methods: {
     interact: function (id, index) {
       let varArray = this.mainData.find(item => item.id === id).value;
@@ -128,6 +155,14 @@ export default {
     },
     signalSelect: function(signal) {
       this.signalSelectedArr.includes(signal) ? this.signalSelectedArr.splice(this.signalSelectedArr.indexOf(signal),1) : this.signalSelectedArr.push(signal);
+    },
+    selectAll: function(){
+      if (this.signalSelectedArr.length !== this.startInfo.numOfStr){
+        this.signalSelectedArr = [];
+        for (let i=1;i<=this.startInfo.numOfStr;i++) {
+          this.signalSelectedArr.push(i)
+        }
+      }
     },
     clearSelected: function() {
       this.signalSelectedArr = [];
@@ -206,6 +241,11 @@ export default {
       //   data: {title: JSON.stringify(this.mainData)} 
       // })
       console.log(JSON.stringify(this.mainData))
+    }
+  },
+  watch: {
+    mainData(newValue){
+      console.log(newValue)
     }
   }
 }
