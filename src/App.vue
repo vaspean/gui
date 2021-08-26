@@ -89,7 +89,7 @@ export default {
         numOfStr: 0,
         numOfTime: 0
       },
-      mainData: null,
+      mainData: [],
       modeClick: 2,
       signalSelectedArr: [],
       generatorCountZero: 1,
@@ -101,11 +101,6 @@ export default {
   created() {
     axios.get('../server/input.json').then(input=>{
       let incomeArr = {numOfStr: input.data.numOfStr, numOfTime: input.data.numOfTime};
-
-      // this.startInfo = {
-      //   numOfStr: incomeArr.numOfStr,
-      //   numOfTime: incomeArr.numOfTime
-      // }
       this.$set(this.startInfo,'numOfStr', incomeArr.numOfStr);
       this.$set(this.startInfo,'numOfTime', incomeArr.numOfTime);
       let logicValuesArr = [];
@@ -116,7 +111,14 @@ export default {
       for (let i = incomeArr.numOfStr; i > 0; i--) {
        mainArray.push({ id: i, name: `Сигнал ${i}`, value: logicValuesArr })
       };
+
+      // for (let index in mainArray) {
+      //   this.$set(this.mainData, index, mainArray[index])
+      // }
+      /////СВЕРХУ НЕ РАБОТАЕТ НО НУЖНО ЧТОБ РАБОТАЛО, СНИЗУ РАБОТАЕТ
       this.mainData = JSON.parse(JSON.stringify(mainArray));
+
+      console.log(this.mainData)
     });
    
   },
@@ -149,23 +151,40 @@ export default {
           break;
         case 2:
           varArray[index] === 0 ? varArray[index] = 1 : varArray[index] = 0;
+
+
+          ////////////////////////////////////////////////////////////////////////////////////////
+          // console.log(this.mainData.find(item => item.id === id).value)
+
+          // this.$set(this.mainData, id, mainArray[index])
+          //////сверху неправильно снизу правильно
           this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          ////////////////////////////////////////////////////////////////////////////////////////
+
+
           break;
       }
     },
+
     signalSelect: function(signal) {
       this.signalSelectedArr.includes(signal) ? this.signalSelectedArr.splice(this.signalSelectedArr.indexOf(signal),1) : this.signalSelectedArr.push(signal);
     },
     selectAll: function(){
+      let varLength = this.signalSelectedArr.length;
       if (this.signalSelectedArr.length !== this.startInfo.numOfStr){
-        this.signalSelectedArr = [];
+        for (let i = 0;i < varLength;i++) {
+          this.$delete(this.signalSelectedArr, 0);
+        }
         for (let i=1;i<=this.startInfo.numOfStr;i++) {
           this.signalSelectedArr.push(i)
         }
       }
     },
     clearSelected: function() {
-      this.signalSelectedArr = [];
+      let varLength = this.signalSelectedArr.length;
+      for (let i = 0;i < varLength;i++) {
+        this.$delete(this.signalSelectedArr, 0);
+      }
     },
     allInvert: function() {
       for (let i = 0; i < this.mainData.length; i++) {
@@ -245,7 +264,10 @@ export default {
   },
   watch: {
     mainData(newValue){
-      console.log(newValue)
+      console.log('объект изменен, стало:', newValue)
+    },
+    signalSelectedArr(newValue) {
+      console.log('массив изменен, стало:', newValue)
     }
   }
 }
