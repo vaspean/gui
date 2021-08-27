@@ -64,7 +64,7 @@
         <table class="graph">
           <tbody class="graph__body">
             <tr v-for="signal in mainData" :key="signal.name" class="graph__tr">
-              <td :class="{ isOne: value===1, isZero: value===0, isSelected: signalSelectedArr.includes(signal.id) }" class="signalValue"
+              <td :class="{ isOne: value==1, isZero: value==0, isSelected: signalSelectedArr.includes(signal.id) }" class="signalValue"
                 v-for="(value,index) in signal.value" @click="interact(signal.id,index)">
               </td>
             </tr>
@@ -89,7 +89,9 @@ export default {
         numOfStr: 0,
         numOfTime: 0
       },
-      mainData: [],
+      // logicValuesArr: [],
+      // mainData: [],
+      mainData: {},
       modeClick: 2,
       signalSelectedArr: [],
       generatorCountZero: 1,
@@ -98,25 +100,29 @@ export default {
       pressedAltZ: false,
     }
   },
+  computed: {
+    logicValuesArr() {
+      let varArray = [];
+      for (let i = 0; i < this.startInfo.numOfTime; i++) {
+        // this.logicValuesArr.push(0)
+        varArray.push(0)
+      };
+      return varArray;
+    }
+  },
   created() {
     axios.get('../server/input.json').then(input=>{
       let incomeArr = {numOfStr: input.data.numOfStr, numOfTime: input.data.numOfTime};
       this.$set(this.startInfo,'numOfStr', incomeArr.numOfStr);
       this.$set(this.startInfo,'numOfTime', incomeArr.numOfTime);
-      let logicValuesArr = [];
-      for (let i = 0; i < incomeArr.numOfTime; i++) {
-        logicValuesArr.push(0)
-      };
-      let mainArray = [];
-      for (let i = incomeArr.numOfStr; i > 0; i--) {
-       mainArray.push({ id: i, name: `Сигнал ${i}`, value: logicValuesArr })
-      };
-
-      // for (let index in mainArray) {
-      //   this.$set(this.mainData, index, mainArray[index])
-      // }
+      for (let i = 0; i<incomeArr.numOfStr;i++) {
+        this.$set(this.mainData, i, { id: incomeArr.numOfStr-i, name: `Сигнал ${incomeArr.numOfStr-i}`, value: JSON.parse(JSON.stringify(this.logicValuesArr ))});
+      }
       /////СВЕРХУ НЕ РАБОТАЕТ НО НУЖНО ЧТОБ РАБОТАЛО, СНИЗУ РАБОТАЕТ
-      this.mainData = JSON.parse(JSON.stringify(mainArray));
+      // for (let i = incomeArr.numOfStr; i > 0; i--) {
+      //  mainArray.push({ id: i, name: `Сигнал ${i}`, value: this.logicValuesArr })
+      // };
+      // this.mainData = JSON.parse(JSON.stringify(mainArray));
 
       console.log(this.mainData)
     });
@@ -139,29 +145,40 @@ export default {
     },
   methods: {
     interact: function (id, index) {
-      let varArray = this.mainData.find(item => item.id === id).value;
+      let varArray;
+      for (let key in this.mainData) {
+        if (this.mainData[key].id===id) {
+          varArray = JSON.parse(JSON.stringify(this.mainData[key].value));
+        }
+      }
+      // console.log(varArray[index])
+      ///////////////////////////////////////
+      // let varArray = this.mainData.find(item => item.id === id).value;
+      // console.log(varArray)
       switch (parseInt(this.modeClick)) {
         case 0:
           varArray[index] = 0;
-          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          for (let key in this.mainData) {
+            if (this.mainData[key].id===id) {
+              this.$set(this.mainData[key], `value`, varArray)
+            }
+          }
           break;
         case 1:
           varArray[index] = 1;
-          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
+          for (let key in this.mainData) {
+            if (this.mainData[key].id===id) {
+              this.$set(this.mainData[key], `value`, varArray)
+            }
+          }
           break;
         case 2:
-          varArray[index] === 0 ? varArray[index] = 1 : varArray[index] = 0;
-
-
-          ////////////////////////////////////////////////////////////////////////////////////////
-          // console.log(this.mainData.find(item => item.id === id).value)
-
-          // this.$set(this.mainData, id, mainArray[index])
-          //////сверху неправильно снизу правильно
-          this.mainData.find(item => item.id === id).value = JSON.parse(JSON.stringify(varArray));
-          ////////////////////////////////////////////////////////////////////////////////////////
-
-
+          varArray[index] == 0 ? varArray[index] = 1 : varArray[index] = 0;
+          for (let key in this.mainData) {
+            if (this.mainData[key].id===id) {
+              this.$set(this.mainData[key], `value`, varArray)
+            }
+          }
           break;
       }
     },
@@ -187,35 +204,35 @@ export default {
       }
     },
     allInvert: function() {
-      for (let i = 0; i < this.mainData.length; i++) {
-        if (this.signalSelectedArr.includes(this.mainData[i].id)) {
-          let varArrayForSignal = this.mainData[i].value;
+      for (let key in this.mainData) {
+        if (this.signalSelectedArr.includes(this.mainData[key].id)) {
+          let varArrayForSignal = this.mainData[key].value;
           for (let value in varArrayForSignal) {
             varArrayForSignal[value] === 0 ? varArrayForSignal[value] = 1 : varArrayForSignal[value] = 0
           }
-          this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForSignal));
+          this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
         }
       }
     },
     allToOne: function() {
-      for (let i = 0; i < this.mainData.length; i++) {
-        if (this.signalSelectedArr.includes(this.mainData[i].id)) {
-          let varArrayForSignal = this.mainData[i].value;
+      for (let key in this.mainData) {
+        if (this.signalSelectedArr.includes(this.mainData[key].id)) {
+          let varArrayForSignal = this.mainData[key].value;
           for (let value in varArrayForSignal) {
             varArrayForSignal[value] = 1;
           }
-          this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForSignal));
+          this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
         }
       }
     },
     allToZero: function() {
-       for (let i = 0; i < this.mainData.length; i++) {
-        if (this.signalSelectedArr.includes(this.mainData[i].id)) {
-          let varArrayForSignal = this.mainData[i].value;
+       for (let key in this.mainData) {
+        if (this.signalSelectedArr.includes(this.mainData[key].id)) {
+          let varArrayForSignal = this.mainData[key].value;
           for (let value in varArrayForSignal) {
             varArrayForSignal[value] = 0;
           }
-          this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForSignal));
+          this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
         }
       }
     },
@@ -244,11 +261,19 @@ export default {
           }
         }
         varArrayForGenerator.splice(valueLength,varArrayForGenerator.length-valueLength);
-        for (let i = 0; i < this.mainData.length; i++) { 
-          if (this.signalSelectedArr.includes(this.mainData[i].id)) { 
-            this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForGenerator));
-          }
+        // for (let i = 0; i < this.mainData.length; i++) { 
+        //   if (this.signalSelectedArr.includes(this.mainData[i].id)) { 
+        //     this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForGenerator));
+        //   }
+        // }
+
+        for (let key in this.mainData) {
+            if (this.signalSelectedArr.includes(this.mainData[key].id)) {
+              this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForGenerator)))
+            }
         }
+        // this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
+        
     },
     editDone: async function () {
 
@@ -263,12 +288,20 @@ export default {
     }
   },
   watch: {
-    mainData(newValue){
-      console.log('объект изменен, стало:', newValue)
+    mainData: {
+      handler: function(val, oldVal) {
+          // local
+          // if (val === oldVal) {
+          //   console.log(`Объект не изменен`, val[0].value, oldVal[0].value)
+          // } else {
+          //   console.log('объект изменен, стало:', val)
+          // }
+      },
+      deep: true
     },
-    signalSelectedArr(newValue) {
-      console.log('массив изменен, стало:', newValue)
-    }
+    // signalSelectedArr(newValue) {
+    //   console.log('массив изменен, стало:', newValue)
+    // }
   }
 }
 </script>
