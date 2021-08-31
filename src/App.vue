@@ -26,6 +26,22 @@
         <label class="radio__label radio__label_editor" for="radio_editor">
         <span>✎</span></label>
       </li>
+
+      <li>
+        <a href="" class="button15" @click.prevent="zoomOutHorizontal">&#5130;</a>
+      </li>
+      <li>
+        <a href="" class="button15" @click.prevent="zoomInHorizontal">&#5125;</a>
+      </li>
+      <li>
+        <a href="" class="button15" @click.prevent="zoomOutVertical">&#5123;</a>
+      </li>
+      <li>
+        <a href="" class="button15" @click.prevent="zoomInVertical">&#5121;</a>
+      </li>
+      <li>
+        <a href="" class="button15" @click.prevent="currentCellHeight = 80; currentCellWidth = 80">С</a>
+      </li>
     </ul>
 
    <div class="toolbar" v-show="signalSelectedArr.length > 0">
@@ -64,7 +80,7 @@
         <table class="graph">
           <tbody class="graph__body">
             <tr v-for="signal in mainData" :key="signal.name" class="graph__tr">
-              <td :class="{ isOne: value==1, isZero: value==0, isSelected: signalSelectedArr.includes(signal.id) }" class="signalValue"
+              <td :class="{ isOne: value==1, isZero: value==0, isSelected: signalSelectedArr.includes(signal.id)|| false }" class="signalValue"
                 v-for="(value,index) in signal.value" @click="interact(signal.id,index)">
               </td>
             </tr>
@@ -93,11 +109,17 @@ export default {
       // mainData: [],
       mainData: {},
       modeClick: 2,
+      leftCorner: null,
+      rightCorner: null,
       signalSelectedArr: [],
+      cellSelectedArr: [],
+      localStorageOfData: [],
       generatorCountZero: 1,
       generatorCountOne: 1,
       generatorStartFromOne: false,
       pressedAltZ: false,
+      currentCellWidth: 80,
+      currentCellHeight: 80,
     }
   },
   computed: {
@@ -118,13 +140,6 @@ export default {
       for (let i = 0; i<incomeArr.numOfStr;i++) {
         this.$set(this.mainData, i, { id: incomeArr.numOfStr-i, name: `Сигнал ${incomeArr.numOfStr-i}`, value: JSON.parse(JSON.stringify(this.logicValuesArr ))});
       }
-      /////СВЕРХУ НЕ РАБОТАЕТ НО НУЖНО ЧТОБ РАБОТАЛО, СНИЗУ РАБОТАЕТ
-      // for (let i = incomeArr.numOfStr; i > 0; i--) {
-      //  mainArray.push({ id: i, name: `Сигнал ${i}`, value: this.logicValuesArr })
-      // };
-      // this.mainData = JSON.parse(JSON.stringify(mainArray));
-
-      console.log(this.mainData)
     });
    
   },
@@ -133,12 +148,15 @@ export default {
       window.addEventListener('keydown', (event) => {
         if (event.key == 'z' && event.altKey && (this.pressedAltZ != true)) {
           console.log("Alt + Z pressed!");
-          this.pressedAltZ=!this.pressedAltZ
+          // this.mainData = {}
+          this.pressedAltZ=!this.pressedAltZ;
+          // this.$set(this.mainData, )
+          
         }
       });
       window.addEventListener('keyup', (event) => {
         if (event.key == 'z' && event.altKey && (this.pressedAltZ != false)) {
-          console.log("Alt + Z unpressed!");
+          // console.log("Alt + Z unpressed!");
           this.pressedAltZ=!this.pressedAltZ
         }
       });
@@ -146,15 +164,13 @@ export default {
   methods: {
     interact: function (id, index) {
       let varArray;
+      // let leftCorner;
+      // let rightCorner;
       for (let key in this.mainData) {
         if (this.mainData[key].id===id) {
           varArray = JSON.parse(JSON.stringify(this.mainData[key].value));
         }
       }
-      // console.log(varArray[index])
-      ///////////////////////////////////////
-      // let varArray = this.mainData.find(item => item.id === id).value;
-      // console.log(varArray)
       switch (parseInt(this.modeClick)) {
         case 0:
           varArray[index] = 0;
@@ -180,9 +196,47 @@ export default {
             }
           }
           break;
+        case 3:
+          if ((this.leftCorner === null && this.rightCorner === null) || (this.leftCorner != null && this.rightCorner != null)) {
+            this.leftCorner = {id,index}
+            this.rightCorner == null;
+            console.log('1')
+          } else if (this.leftCorner != null && this.rightCorner == null) {
+            this.rightCorner = {id,index}
+            console.log('2')
+          }
+          console.log(this.leftCorner, this.rightCorner)
+          // this.cellSelectedArr.includes({id,index}) ? this.cellSelectedArr.splice(this.cellSelectedArr.indexOf({id,index}),1) : this.cellSelectedArr.push({id,index});
+          // console.log(this.cellSelectedArr)
+        // varArray[index] == 0 ? varArray[index] = 1 : varArray[index] = 0;
+        // for (let key in this.mainData) {
+        //   if (this.mainData[key].id===id) {
+        //     this.$set(this.mainData[key], `value`, varArray)
+        //   }
+        // }
+        break;
       }
     },
-
+    zoomOutHorizontal: function() {
+      if (this.currentCellWidth>=40) {
+        this.currentCellWidth-=5;
+      }
+    },
+    zoomInHorizontal: function() {
+      if (this.currentCellWidth<110) {
+        this.currentCellWidth+=5;
+      }
+    },
+    zoomOutVertical: function() {
+      if (this.currentCellHeight>=40) {
+        this.currentCellHeight-=5;   
+      }
+    },
+    zoomInVertical: function() {
+      if (this.currentCellHeight<110) {
+        this.currentCellHeight+=5;
+      }
+    },
     signalSelect: function(signal) {
       this.signalSelectedArr.includes(signal) ? this.signalSelectedArr.splice(this.signalSelectedArr.indexOf(signal),1) : this.signalSelectedArr.push(signal);
     },
@@ -261,19 +315,15 @@ export default {
           }
         }
         varArrayForGenerator.splice(valueLength,varArrayForGenerator.length-valueLength);
-        // for (let i = 0; i < this.mainData.length; i++) { 
-        //   if (this.signalSelectedArr.includes(this.mainData[i].id)) { 
-        //     this.mainData[i].value = JSON.parse(JSON.stringify(varArrayForGenerator));
-        //   }
-        // }
-
         for (let key in this.mainData) {
             if (this.signalSelectedArr.includes(this.mainData[key].id)) {
               this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForGenerator)))
             }
         }
-        // this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
-        
+    },
+    addDataInStorage: function(data) {
+      this.localStorageOfData.push(JSON.parse(JSON.stringify(data)))
+      this.localStorageOfData.length>10? this.localStorageOfData.shift() : true;
     },
     editDone: async function () {
 
@@ -290,7 +340,9 @@ export default {
   watch: {
     mainData: {
       handler: function(val, oldVal) {
-          // local
+          this.addDataInStorage(val);
+          // localStorage.name = this.mainData;
+          // console.log(localStorage)
           // if (val === oldVal) {
           //   console.log(`Объект не изменен`, val[0].value, oldVal[0].value)
           // } else {
@@ -298,6 +350,18 @@ export default {
           // }
       },
       deep: true
+    },
+    currentCellHeight: {
+      handler: function(val, oldVal) {
+        document.documentElement.style.setProperty("--size-cell-height", `${this.currentCellHeight}px`);
+        // console.log(val, oldVal)
+      }
+    },
+    currentCellWidth: {
+      handler: function(val, oldVal) {
+        document.documentElement.style.setProperty("--size-cell-width", `${this.currentCellWidth}px`);
+        // console.log(val, oldVal)
+      }
     },
     // signalSelectedArr(newValue) {
     //   console.log('массив изменен, стало:', newValue)

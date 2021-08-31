@@ -51,6 +51,8 @@
     --color-main-low-opacity: rgba(76, 0, 255, 0.4);
     --color-main-light-low-opacity: rgba(143, 0, 255, 0.03);
     --color-background-main: #F5F6F9;
+    --size-cell-width: 80px;
+    --size-cell-height: 80px;
 }
   
 * {
@@ -58,6 +60,8 @@
 }
   
 html {
+    zoom: 0.67;
+    /* transform: scale(0.67); */
     font-family: "Montserrat", sans-serif;
     outline: none;
     padding: 0;
@@ -167,6 +171,23 @@ ul {
     top: 13px;
     left: 27%;
 }
+
+.form_radio_btn:nth-child(4) {
+    margin-right: 200px !important;
+}
+
+.gui__modes li .button15:first-child {
+    /* margin-left: 200px; */
+}
+
+.gui__modes li .button15 {
+    margin: 0;
+    margin-right: 10px;
+    box-shadow: unset;
+    /* padding: 0; */
+    height: 45px;
+    font-size: 32px;
+}
 /* РАДИОКНОПКИ РЕЖИМОВ */
 
 .header {
@@ -194,12 +215,14 @@ ul {
 
 .table ul li {
     padding: 0 20px;
-    height: 81.5px;
+    height: calc(var(--size-cell-height) + 1.35px);
+    /* height: 81.35px; */
     cursor: pointer;
 }
 
 .table ul li:first-child {
-    height: 82.5px;
+    height: calc(var(--size-cell-height) + 2.35px);
+    /* height: 82.5px; */
 }
 
 .table__container {
@@ -262,23 +285,25 @@ td {
 
 .signalValue {
     padding: 0;
-    min-width: 80px;
-    height: 80px;
+    min-width: var(--size-cell-width);
+    height: var(--size-cell-height);
     cursor: pointer;
 }
 
 .isOne {
     background-image: url(../img/svg-editor-image.svg);
     background-repeat: no-repeat;
-    background-size: 120%;
-    background-position: -6px -13px;
+    /* background-size: 120%; */
+    background-size: cover;
+    background-position: 0 -20px;
 }
 
 .isZero {
     background-image: url(../img/svg-editor-image.svg);
     background-repeat: no-repeat;
-    background-size: 120%;
-    background-position: -6px 29px;
+    /* background-size: 120%; */
+    background-size: cover;
+    background-position: 0 20px;
 }
 
 .isSelected {
