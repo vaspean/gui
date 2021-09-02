@@ -44,8 +44,8 @@
       </li>
     </ul>
 
-   <div class="toolbar" v-show="signalSelectedArr.length > 0">
-      <span>Выбрано {{signalSelectedArr.length}} шт</span>
+   <div class="toolbar" v-show="(signalSelectedArr.length > 0) || (cellSelectedArr.length>1)">
+      <span>Выбрано {{countOfCurrentArray}} шт</span>
       <span class="clearSelected" @click="clearSelected">❎</span>
       <ul>
         <li><a href="" class="button15" @click.prevent="allInvert">Инвертировать</a></li>
@@ -80,7 +80,7 @@
         <table class="graph">
           <tbody class="graph__body">
             <tr v-for="signal in mainData" :key="signal.name" class="graph__tr">
-              <td :class="{isSelected: signalSelectedArr.includes(signal.id)|| false }" class="signalValue"
+              <td :class="{isSelected: signalSelectedArr.includes(signal.id)|| selectCheckEditor(signal.id, index)}" class="signalValue"
                 v-for="(value,index) in signal.value" @click="interact(signal.id,index)">
                 <div class="signal_level" :class="{ isOne: value==1, isZero: value==0 }"></div>
               </td>
@@ -106,12 +106,8 @@ export default {
         numOfStr: 0,
         numOfTime: 0
       },
-      // logicValuesArr: [],
-      // mainData: [],
       mainData: {},
       modeClick: 2,
-      leftCorner: null,
-      rightCorner: null,
       signalSelectedArr: [],
       cellSelectedArr: [],
       localStorageOfData: [],
@@ -131,6 +127,11 @@ export default {
         varArray.push(0)
       };
       return varArray;
+    },
+    countOfCurrentArray() {
+      let count;
+      this.cellSelectedArr.length === 0 ? count = this.signalSelectedArr.length : count = this.cellSelectedArr.length;
+      return count
     }
   },
   created() {
@@ -198,23 +199,25 @@ export default {
           }
           break;
         case 3:
-          if ((this.leftCorner === null && this.rightCorner === null) || (this.leftCorner != null && this.rightCorner != null)) {
-            this.leftCorner = {id,index}
-            this.rightCorner == null;
-            console.log('1')
-          } else if (this.leftCorner != null && this.rightCorner == null) {
-            this.rightCorner = {id,index}
-            console.log('2')
+          this.signalSelectedArr = [];
+          if (this.cellSelectedArr.length < 2) {
+            if (this.cellSelectedArr.length === 1) {
+              // console.log((this.cellSelectedArr[0].id != id) || (this.cellSelectedArr[0].index != index))
+              if ((this.cellSelectedArr[0].id != id) || (this.cellSelectedArr[0].index != index)) {
+                this.cellSelectedArr.push({id,index})
+              } else this.$delete(this.cellSelectedArr, 0)
+            } else this.cellSelectedArr.push({id,index})
           }
-          console.log(this.leftCorner, this.rightCorner)
-          // this.cellSelectedArr.includes({id,index}) ? this.cellSelectedArr.splice(this.cellSelectedArr.indexOf({id,index}),1) : this.cellSelectedArr.push({id,index});
-          // console.log(this.cellSelectedArr)
-        // varArray[index] == 0 ? varArray[index] = 1 : varArray[index] = 0;
-        // for (let key in this.mainData) {
-        //   if (this.mainData[key].id===id) {
-        //     this.$set(this.mainData[key], `value`, varArray)
-        //   }
-        // }
+          if (this.cellSelectedArr.length == 2) {
+            for (let i = Math.min(this.cellSelectedArr[0].id,this.cellSelectedArr[1].id); i <= Math.max(this.cellSelectedArr[0].id,this.cellSelectedArr[1].id); i++) {
+              for (let j = Math.min(this.cellSelectedArr[0].index,this.cellSelectedArr[1].index); j <= Math.max(this.cellSelectedArr[0].index,this.cellSelectedArr[1].index); j++) {
+                this.cellSelectedArr.push({id: i, index: j})
+              }  
+            }
+              this.$delete(this.cellSelectedArr,0);
+              this.$delete(this.cellSelectedArr,0);
+          }
+          console.log(this.cellSelectedArr)
         break;
       }
     },
@@ -239,9 +242,11 @@ export default {
       }
     },
     signalSelect: function(signal) {
+      this.cellSelectedArr = [];
       this.signalSelectedArr.includes(signal) ? this.signalSelectedArr.splice(this.signalSelectedArr.indexOf(signal),1) : this.signalSelectedArr.push(signal);
     },
     selectAll: function(){
+      this.cellSelectedArr = [];
       let varLength = this.signalSelectedArr.length;
       if (this.signalSelectedArr.length !== this.startInfo.numOfStr){
         for (let i = 0;i < varLength;i++) {
@@ -252,11 +257,28 @@ export default {
         }
       }
     },
-    clearSelected: function() {
-      let varLength = this.signalSelectedArr.length;
-      for (let i = 0;i < varLength;i++) {
-        this.$delete(this.signalSelectedArr, 0);
+    selectCheckEditor: function(id,index) {
+      for (let value of this.cellSelectedArr) {
+        if ((value.id===id) && (value.index===index)) { 
+          return true
+        }
       }
+    },
+    clearSelected: function() {
+      let varLength;
+      if (this.signalSelectedArr.length != 0) {
+        varLength = this.signalSelectedArr.length;
+        for (let i = 0;i < varLength;i++) {
+          this.$delete(this.signalSelectedArr, 0);
+        }
+      } else {
+        varLength = this.cellSelectedArr.length;
+        for (let i = 0;i < varLength;i++) {
+          this.$delete(this.cellSelectedArr, 0);
+        }
+      }
+      // let varLength = this.signalSelectedArr.length;
+      
     },
     allInvert: function() {
       for (let key in this.mainData) {
@@ -355,9 +377,6 @@ export default {
     currentCellHeight: {
       handler: function(val, oldVal) {
         document.documentElement.style.setProperty("--size-cell-height", `${this.currentCellHeight}px`);
-        document.documentElement.style.setProperty("--size-cell-background-one", `0 -${this.currentCellHeight/5}px`);
-        document.documentElement.style.setProperty("--size-cell-background-zero", `0 ${this.currentCellHeight/5}px`);
-        // console.log(val, oldVal)
       }
     },
     currentCellWidth: {
@@ -365,9 +384,13 @@ export default {
         document.documentElement.style.setProperty("--size-cell-width", `${this.currentCellWidth}px`);
       }
     },
-    // signalSelectedArr(newValue) {
-    //   console.log('массив изменен, стало:', newValue)
-    // }
+    signalSelectedArr(newValue) {
+      // this.cellSelectedArr = [];
+      // console.log('массив изменен, стало:', newValue)
+    },
+    cellSelectedArr() {
+      // this.signalSelectedArr = [];
+    }
   }
 }
 </script>

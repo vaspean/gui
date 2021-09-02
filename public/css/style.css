@@ -309,6 +309,10 @@ td {
     /* border-bottom: calc(var(--size-cell-height)/6) solid var(--color-black); */
 }
 
+.signalValue:hover {
+    background-color: var(--color-main-light);
+}
+
 .isSelected {
     background-color: var(--color-main-light);
 }
