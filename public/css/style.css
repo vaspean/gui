@@ -53,6 +53,8 @@
     --color-background-main: #F5F6F9;
     --size-cell-width: 80px;
     --size-cell-height: 80px;
+    --size-cell-background-one: 0 -20px;
+    --size-cell-background-zero: 0 20px;
 }
   
 * {
@@ -185,7 +187,7 @@ ul {
     margin-right: 10px;
     box-shadow: unset;
     /* padding: 0; */
-    height: 45px;
+    height: 44px;
     font-size: 32px;
 }
 /* РАДИОКНОПКИ РЕЖИМОВ */
@@ -244,15 +246,17 @@ td {
     border: 1px solid black;
 }
 
-.signal__item {  
+.signal__item { 
+    /* padding-top: 12% !important;  */
     position: relative;
 }
 
 .signalName {
+    margin: 0;
     text-align: center;
     width: 100%;
     position: absolute;
-    top: 11%;
+    top: 30%;
     left: 1%;
 }
 
@@ -290,20 +294,19 @@ td {
     cursor: pointer;
 }
 
+.signal_level {
+    height: calc(var(--size-cell-height)/2);
+    width: 100%;
+}
+
 .isOne {
-    background-image: url(../img/svg-editor-image.svg);
-    background-repeat: no-repeat;
-    /* background-size: 120%; */
-    background-size: cover;
-    background-position: 0 -20px;
+    border-top: 8px solid var(--color-black);
+    /* border-top: calc(var(--size-cell-height)/6) solid var(--color-black); */
 }
 
 .isZero {
-    background-image: url(../img/svg-editor-image.svg);
-    background-repeat: no-repeat;
-    /* background-size: 120%; */
-    background-size: cover;
-    background-position: 0 20px;
+    border-bottom: 8px solid var(--color-black);
+    /* border-bottom: calc(var(--size-cell-height)/6) solid var(--color-black); */
 }
 
 .isSelected {
