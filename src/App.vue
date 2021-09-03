@@ -3,25 +3,25 @@
     <!--<h2 class="header">Кол-во сигналов : {{startInfo.numOfStr}} <br> Кол-во временных делений : {{startInfo.numOfTime}}</h2>-->
     <ul class="gui__modes">
 
-      <li class="form_radio_btn">
+      <li class="form_radio_btn" @click="clearSelected">
         <input type="radio" id="radio_inverse" name="mode" value="2" v-model="modeClick" checked>
         <label class="radio__label radio__label_inverse" for="radio_inverse">
         <span>¬</span></label>
       </li>
 
-      <li class="form_radio_btn">
+      <li class="form_radio_btn" @click="clearSelected">
         <input type="radio" id="radio_toOne" name="mode" value="1" v-model="modeClick">
         <label class="radio__label radio__label_toOne" for="radio_toOne">
         <span>1</span></label>
       </li>
       
-      <li class="form_radio_btn">
+      <li class="form_radio_btn" @click="clearSelected">
         <input type="radio" id="radio_toZero" name="mode" value="0" v-model="modeClick">
         <label class="radio__label radio__label_toZero" for="radio_toZero">
         <span>0</span></label>
       </li>
 
-      <li class="form_radio_btn">
+      <li class="form_radio_btn" @click="clearSelected">
         <input type="radio" id="radio_editor" name="mode" value="3" v-model="modeClick">
         <label class="radio__label radio__label_editor" for="radio_editor">
         <span>✎</span></label>
