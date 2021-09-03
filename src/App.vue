@@ -55,11 +55,11 @@
       <div class="generator">
           <span>Генератор:</span>
           <label for="generatorInputZero">Кол-во нулей</label>
-          <input type="number" id="generatorInputZero" v-model="generatorCountZero">
+          <input type="number" id="generatorInputZero" v-model="generatorProperty.countZero">
           <label for="generatorInputOne">Кол-во единиц</label>
-          <input type="number" id="generatorInputOne" v-model="generatorCountOne">
+          <input type="number" id="generatorInputOne" v-model="generatorProperty.countOne">
           <label for="generatorCheckbox">Начать с 1</label>
-          <input type="checkbox" id="generatorCheckbox" v-model="generatorStartFromOne">
+          <input type="checkbox" id="generatorCheckbox" v-model="generatorProperty.startFromOne">
           <a href="#" class="button15" @click.prevent="generatorClick">Задать</a>
       </div>
     </div>
@@ -111,9 +111,7 @@ export default {
       signalSelectedArr: [],
       cellSelectedArr: [],
       localStorageOfData: [],
-      generatorCountZero: 1,
-      generatorCountOne: 1,
-      generatorStartFromOne: false,
+      generatorProperty: {countZero: 1,countOne: 1, startFromOne: false},
       pressedAltZ: false,
       currentCellWidth: 80,
       currentCellHeight: 80,
@@ -217,7 +215,7 @@ export default {
               this.$delete(this.cellSelectedArr,0);
               this.$delete(this.cellSelectedArr,0);
           }
-          console.log(this.cellSelectedArr)
+          //console.log(this.cellSelectedArr)
         break;
       }
     },
@@ -281,68 +279,132 @@ export default {
       
     },
     allInvert: function() {
-      for (let key in this.mainData) {
-        if (this.signalSelectedArr.includes(this.mainData[key].id)) {
-          let varArrayForSignal = this.mainData[key].value;
-          for (let value in varArrayForSignal) {
-            varArrayForSignal[value] === 0 ? varArrayForSignal[value] = 1 : varArrayForSignal[value] = 0
+      if (this.signalSelectedArr.length != 0) {
+        for (let key in this.mainData) {
+          if (this.signalSelectedArr.includes(this.mainData[key].id)) {
+            let varArrayForSignal = this.mainData[key].value;
+            for (let value in varArrayForSignal) {
+              varArrayForSignal[value] === 0 ? varArrayForSignal[value] = 1 : varArrayForSignal[value] = 0
+            }
+            this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
           }
-          this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
+        }
+      } else if (this.cellSelectedArr.length != 0) {
+        for (let key in this.mainData) {
+          let varArrayForSignal = this.mainData[key].value;
+          let infoObject = this.cellSelectedArr.filter(item => item.id == this.mainData[key].id);
+          if (infoObject.length != 0) {
+            let currentSignalIndexes = infoObject.map(item => item.index);
+            for (let i = Math.min(...currentSignalIndexes); i <= Math.max(...currentSignalIndexes); i++) {
+              varArrayForSignal[i] === 0 ? varArrayForSignal[i] = 1 : varArrayForSignal[i] = 0
+            }
+            this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)));
+          }
         }
       }
     },
     allToOne: function() {
-      for (let key in this.mainData) {
-        if (this.signalSelectedArr.includes(this.mainData[key].id)) {
-          let varArrayForSignal = this.mainData[key].value;
-          for (let value in varArrayForSignal) {
-            varArrayForSignal[value] = 1;
+      if (this.signalSelectedArr.length != 0) {
+        for (let key in this.mainData) {
+          if (this.signalSelectedArr.includes(this.mainData[key].id)) {
+            let varArrayForSignal = this.mainData[key].value;
+            for (let value in varArrayForSignal) {
+              varArrayForSignal[value] = 1;
+            }
+            this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
           }
-          this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
+        }
+      } else if (this.cellSelectedArr.length != 0) {
+        for (let key in this.mainData) {
+          let varArrayForSignal = this.mainData[key].value;
+          let infoObject = this.cellSelectedArr.filter(item => item.id == this.mainData[key].id);
+          if (infoObject.length != 0) {
+            let currentSignalIndexes = infoObject.map(item => item.index);
+            for (let i = Math.min(...currentSignalIndexes); i <= Math.max(...currentSignalIndexes); i++) {
+              varArrayForSignal[i] = 1;
+            }
+            this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)));
+          }
         }
       }
     },
     allToZero: function() {
+      if (this.signalSelectedArr.length != 0) {
        for (let key in this.mainData) {
-        if (this.signalSelectedArr.includes(this.mainData[key].id)) {
-          let varArrayForSignal = this.mainData[key].value;
-          for (let value in varArrayForSignal) {
-            varArrayForSignal[value] = 0;
+          if (this.signalSelectedArr.includes(this.mainData[key].id)) {
+            let varArrayForSignal = this.mainData[key].value;
+            for (let value in varArrayForSignal) {
+              varArrayForSignal[value] = 0;
+            }
+            this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
           }
-          this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)))
         }
+      } else if (this.cellSelectedArr.length != 0) {
+          for (let key in this.mainData) {
+            let varArrayForSignal = this.mainData[key].value;
+            let infoObject = this.cellSelectedArr.filter(item => item.id == this.mainData[key].id);
+            if (infoObject.length != 0) {
+              let currentSignalIndexes = infoObject.map(item => item.index);
+              for (let i = Math.min(...currentSignalIndexes); i <= Math.max(...currentSignalIndexes); i++) {
+                varArrayForSignal[i] = 0;
+              }
+              this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForSignal)));
+            }
+          }
       }
     },
     generatorClick: function(){
-        if (this.generatorCountOne < 1 || this.generatorCountZero < 1) {
+        if (this.generatorProperty.countOne < 1 || this.generatorProperty.countZero < 1) {
           alert('Пожалуйста, выставите положительные числа для генератора')
          return
         }
-        let valueLength = this.startInfo.numOfTime;
-        let varArrayForGenerator = [];
-        while (varArrayForGenerator.length<=valueLength) {
-          if (this.generatorStartFromOne) {
-            for (let i=0;i<this.generatorCountOne;i++) {
-              varArrayForGenerator.push(1);
-            }
-            for (let k=0;k<this.generatorCountZero;k++) {
-              varArrayForGenerator.push(0);
-            }
-          } else {
-            for (let i=0;i<this.generatorCountZero;i++) {
-              varArrayForGenerator.push(0);
-            }
-            for (let k=0;k<this.generatorCountOne;k++) {
-              varArrayForGenerator.push(1);
-            }
-          }
-        }
-        varArrayForGenerator.splice(valueLength,varArrayForGenerator.length-valueLength);
-        for (let key in this.mainData) {
+        if (this.signalSelectedArr.length != 0) { 
+          let valueLength = this.startInfo.numOfTime;
+          let varArrayForGenerator = this.generatorCreateSignal(valueLength);
+          for (let key in this.mainData) {
             if (this.signalSelectedArr.includes(this.mainData[key].id)) {
               this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForGenerator)))
             }
+          }
+        } else if (this.cellSelectedArr.length != 0) {
+          for (let key in this.mainData) {
+            let varArrayForGenerator = this.mainData[key].value;
+            let infoObject = this.cellSelectedArr.filter(item => item.id == this.mainData[key].id);
+            if (infoObject.length != 0) {
+              let currentSignalIndexes = infoObject.map(item => item.index)
+              let minIndex = Math.min(...currentSignalIndexes);
+              let maxIndex = Math.max(...currentSignalIndexes);
+              let countOfIteration = (maxIndex - minIndex)+1;
+              let subarrayToInject = this.generatorCreateSignal(countOfIteration);
+              for (let i = 0; i < countOfIteration;i++) {
+                varArrayForGenerator.splice(minIndex + i, 1, subarrayToInject[i]);
+              }
+              this.$set(this.mainData[key], `value`, JSON.parse(JSON.stringify(varArrayForGenerator)))
+            }
+          }
         }
+    },
+    generatorCreateSignal: function(length) {
+      let varArrayForGenerator = [];
+      while (varArrayForGenerator.length<=length) {
+          if (this.generatorProperty.startFromOne) {
+            for (let i=0;i<this.generatorProperty.countOne;i++) {
+              varArrayForGenerator.push(1);
+            }
+            for (let k=0;k<this.generatorProperty.countZero;k++) {
+              varArrayForGenerator.push(0);
+            }
+          } else {
+            for (let i=0;i<this.generatorProperty.countZero;i++) {
+              varArrayForGenerator.push(0);
+            }
+            for (let k=0;k<this.generatorProperty.countOne;k++) {
+              varArrayForGenerator.push(1);
+            }
+          }
+      }
+      varArrayForGenerator.splice(length,varArrayForGenerator.length-length)
+      return varArrayForGenerator;
     },
     addDataInStorage: function(data) {
       this.localStorageOfData.push(JSON.parse(JSON.stringify(data)))
@@ -363,7 +425,8 @@ export default {
   watch: {
     mainData: {
       handler: function(val, oldVal) {
-          this.addDataInStorage(val);
+          // this.addDataInStorage(val);
+          console.log('объект изменен, стало:', val)
           // localStorage.name = this.mainData;
           // console.log(localStorage)
           // if (val === oldVal) {
