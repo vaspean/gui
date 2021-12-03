@@ -11,11 +11,11 @@
                     {{groupBranchSymbol(signal)}}{{signal.name | signalNameFormat}}
                 </p>
             </li>
-            <div class="table__select_all" slot="footer"> 
+            <div class="table__select_all" slot="footer">
                 <a href="" class="button15 button15__signal_name" @click.prevent="$store.commit('allSignalsSelect')">Выбрать&nbsp;все</a>
             </div>
         </draggable>
-        <div class="table__container">   
+        <div class="table__container">
             <table class="graph">
                 <tbody class="graph__body">
                     <tr v-show="openedGroupCheck(signal)" scope="row" v-for="(signal,indexOfSignalInMainData) in $store.state.mainDataArray" :key="signal.name" class="graph__tr">
@@ -32,14 +32,14 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>           
+                    <tr>
                         <td class="signalTime" v-for="(timeCount,index) in $store.state.startInfoForTable.numOfTime" :key="timeCount">
                         {{timeCount}}
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div> 
+        </div>
     </div>
 </template>
 
@@ -57,13 +57,6 @@ export default {
     components: {
         draggable
     },
-    data() {
-        return {
-            // dragging: true,
-            // varArrayForOpenedGroups: [],
-            // varArrayForTransportGroupSignals: []
-        }
-    },
     computed: {
         mainDataStore: {
             get() {
@@ -75,7 +68,7 @@ export default {
         },
         countGroups() {
            return this.$store.state.mainDataArray.filter((group)=> {
-                return group.type == 'group' 
+                return group.type == 'group'
             }).length;
         },
     },
@@ -83,15 +76,14 @@ export default {
             axios.get('http://127.0.0.1:7999').then(input=>{
                 if (input.data.ok == true) {
                     this.$store.commit('appLoad');
-                    axios.get('http://127.0.0.1:7999/dataPage?page=1').then(input=>{   
-                        // console.log(JSON.parse(JSON.stringify(input.data)))
+                    axios.get('http://127.0.0.1:7999/dataPage?page=1').then(input=>{
                         let numberOfTimeFromArray;
                         if (input.data[0].type != 'signal') {
                             numberOfTimeFromArray = input.data[0].data[0].value.length;
                         } else {
                             numberOfTimeFromArray = input.data[0].value.length;
                         }
-                        
+
                         let incomeArr = {numOfStr: input.data.length, numOfTime: numberOfTimeFromArray};
                         let transformedData = [];
                         input.data.forEach((item)=> {
@@ -113,8 +105,8 @@ export default {
                         });
                         this.$store.commit('updateMainDataArray',transformedData)
                         this.$store.commit('startInfoForTableSet', incomeArr);
-                        
-                    }); 
+
+                    });
                 }
             });
     },
@@ -122,7 +114,7 @@ export default {
         groupBranchSymbol(signal) {
             if (signal.groupId != undefined && signal.type == 'signal') {
                  return '└╴'
-            }       
+            }
         },
         groupArraySum(groupId) {
             let arrayToReturn = [];
@@ -133,9 +125,8 @@ export default {
                 if (signal.groupId!=undefined && signal.type == 'signal') {
                     if (signal.groupId === groupId) {
                         for (let i = 0; i < this.$store.state.startInfoForTable.numOfTime; i++) {
-                            // console.log(signal.value[i],i,this.$store.state.startInfoForTable.numOfTime)
                             arrayToReturn[i]+=signal.value[i].toString(2);
-                        } 
+                        }
                     }
                 }
             });
@@ -171,28 +162,28 @@ export default {
         },
         cellsSelectedCheck: function(id,index) {
             for (let value of this.$store.state.cellsSelectedArr) {
-                if ((value.id===id) && (value.index===index)) { 
+                if ((value.id===id) && (value.index===index)) {
                     return true
                 }
             }
         },
         interactWithCell: function (id, index, readOnly, type) {
             if (readOnly || type!='signal') {
-                return 
+                return
             }
             let varArray = JSON.parse(JSON.stringify(this.$store.state.mainDataArray[id].value));
             switch (parseInt(this.$store.state.modeClick)) {
                 case 0:
                     varArray[index] = 0;
-                    this.$set(this.$store.state.mainDataArray[id],`value`,varArray)	
+                    this.$set(this.$store.state.mainDataArray[id],`value`,varArray)
                 break;
                 case 1:
                     varArray[index] = 1;
-                    this.$set(this.$store.state.mainDataArray[id],`value`,varArray)	
+                    this.$set(this.$store.state.mainDataArray[id],`value`,varArray)
                 break;
                 case 2:
                     varArray[index] == 0 ? varArray[index] = 1 : varArray[index] = 0;
-                    this.$set(this.$store.state.mainDataArray[id],`value`,varArray)	
+                    this.$set(this.$store.state.mainDataArray[id],`value`,varArray)
                 break;
                 case 3:
                     this.$store.commit('signalsSelectedClear');
@@ -202,14 +193,14 @@ export default {
                                 this.$store.commit('cellsSelectedArrPush',{id,index})
                             } else this.$store.commit('cellsSelectedArrDelete')
                         } else this.$store.commit('cellsSelectedArrPush',{id,index})
-                    }                   
+                    }
                     if (this.$store.state.cellsSelectedArr.length == 2) {
                         for (let i = Math.min(this.$store.state.cellsSelectedArr[0].id,this.$store.state.cellsSelectedArr[1].id); i <= Math.max(this.$store.state.cellsSelectedArr[0].id,this.$store.state.cellsSelectedArr[1].id); i++) {
                             for (let j = Math.min(this.$store.state.cellsSelectedArr[0].index,this.$store.state.cellsSelectedArr[1].index); j <= Math.max(this.$store.state.cellsSelectedArr[0].index,this.$store.state.cellsSelectedArr[1].index); j++) {
                                 if (!this.$store.state.mainDataArray[i].readOnly && this.$store.state.mainDataArray[i].type == 'signal') {
                                     this.$store.commit('cellsSelectedArrPush',{id: i, index: j})
                                 }
-                            }  
+                            }
                         }
                         this.$store.commit('cellsSelectedArrDelete');
                         this.$store.commit('cellsSelectedArrDelete');
@@ -224,14 +215,6 @@ export default {
             return (signal.groupId!=undefined&&signal.type!='group'&& this.$store.state.groupsOpenedArr.includes(signal.groupId)) || signal.groupId==undefined || signal.type=='group'
         },
 
-    },
-    watch: {
-        // mainDataArray: {
-        //     handler: function(val, oldVal) {
-        //         this.$store.commit('updateMainDataArray', val);
-        //     },
-        //     deep: true
-        // },
     }
 }
 </script>

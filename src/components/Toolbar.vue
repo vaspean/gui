@@ -11,7 +11,7 @@
         <label class="radio__label radio__label_toOne" for="radio_toOne">
         <span>1</span></label>
       </li>
-      
+
       <li class="form_radio_btn" @click="$store.commit('signalsSelectedClear')">
         <input type="radio" id="radio_toZero" name="mode" value="0" v-model="modeClick">
         <label class="radio__label radio__label_toZero" for="radio_toZero">
@@ -60,35 +60,25 @@ export default {
     data() {
         return {
           checkPostOk: false
-            // currentCellWidth: this.$store.state.currentCellWidth,
-            // currentCellHeight: this.$store.state.currentCellHeight,
         }
     },
     methods: {
         nextPage() {
           if (this.$store.state.editMode == true) return
-          console.log(this.currentDataToServer())
           axios.post(`http://127.0.0.1:7999/dataPage?page=${this.page}`,JSON.parse(JSON.stringify(this.currentDataToServer()))).then(input=> {
             this.page < this.pages ? this.page += 1 : false;
             let tableContainer = document.getElementsByClassName("table__container");
             tableContainer[0].scrollLeft = 0;
-            
             this.getDataByPage(this.page);
-            // console.log(input)
           });
-
-          
         },
         previousPage() {
           if (this.$store.state.editMode == true) return
-          console.log(this.currentDataToServer())
           axios.post(`http://127.0.0.1:7999/dataPage?page=${this.page}`,JSON.parse(JSON.stringify(this.currentDataToServer()))).then(input=> {
             this.page > 1 ? this.page -= 1 : false;
             let tableContainer = document.getElementsByClassName("table__container");
             tableContainer[0].scrollLeft = 8188;
-            
             this.getDataByPage(this.page);
-            // console.log(input)
           });
 		    },
         currentDataToServer() {
@@ -119,15 +109,14 @@ export default {
           return currentDataToServer;
         },
         getDataByPage(page) {
-          axios.get(`http://127.0.0.1:7999/dataPage?page=${page}`).then(input=>{  
-            // console.log(JSON.parse(JSON.stringify(input.data))) 
+          axios.get(`http://127.0.0.1:7999/dataPage?page=${page}`).then(input=>{
             let numberOfTimeFromArray;
             if (input.data[0].type != 'signal') {
                 numberOfTimeFromArray = input.data[0].data[0].value.length;
             } else {
                 numberOfTimeFromArray = input.data[0].value.length;
             }
-            
+
             let incomeArr = {numOfStr: input.data.length, numOfTime: numberOfTimeFromArray}
             let transformedData = [];
             input.data.forEach((item)=> {
@@ -149,13 +138,13 @@ export default {
             });
             this.$store.commit('updateMainDataArray',transformedData)
             this.$store.commit('startInfoForTableSet', incomeArr);
-            
+
           });
         }
     },
     computed: {
         editModeMessage() {
-          return this.$store.state.editMode ?  'Выключить' : 'Включить' 
+          return this.$store.state.editMode ?  'Выключить' : 'Включить'
         },
         currentCellWidth: {
           get() {

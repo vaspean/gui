@@ -10,7 +10,6 @@ export default new Vuex.Store({
     modeClick: 2,
     page: 1,
     pages: 1,
-    // cellsPerPage: 20,
     startInfoForTable: {},
     mainDataArray: [],
     varArrayForTransportGroupSignals: [],
@@ -97,7 +96,7 @@ export default new Vuex.Store({
         for (let i = 0;i < varLength;i++) {
           state.cellsSelectedArr.splice(0,1)
         }
-      }  
+      }
     },
     groupOpenClose(state,payload) {
       if (!state.editMode) {
@@ -124,16 +123,16 @@ export default new Vuex.Store({
         state.varArrayForOpenedGroups = state.groupsOpenedArr;
         state.groupsOpenedArr = [];
         let countGroups = state.mainDataArray.filter((group)=> {
-          return group.type == 'group' 
+          return group.type == 'group'
         }).length;
-        
+
         for (let currentNumOfGroup = 1; currentNumOfGroup<=countGroups; currentNumOfGroup++) {
           for (let i = 0; i < state.mainDataArray[getIndexOfCurrentGroup(currentNumOfGroup)].data;i++) {
             state.varArrayForTransportGroupSignals.push(state.mainDataArray[getIndexOfCurrentGroup(currentNumOfGroup)+1+i]);
-          }              
+          }
         }
         state.mainDataArray = state.mainDataArray.filter((item)=> {
-          return ((item.groupId == undefined)||item.type == 'group') 
+          return ((item.groupId == undefined)||item.type == 'group')
         });
       } else if (state.editMode) {
         state.varArrayForTransportGroupSignals.forEach((signal)=>{
@@ -188,11 +187,5 @@ export default new Vuex.Store({
         state.mainDataArray.reverse();
       }
     }
-  },
-  actions: {
-  },
-  modules: {
-  },
-  getters: {
   }
 })

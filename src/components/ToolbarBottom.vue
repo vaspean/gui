@@ -26,7 +26,7 @@
 				</select>
 				<a href="#" class="button15" @click.prevent="setSignalColor">Задать</a>
 			</li>
-		</ul> 
+		</ul>
 		<div class="generator">
 				<span>Генератор:</span>
 				<label for="generatorInputZero">Кол-во нулей</label>
@@ -48,12 +48,10 @@
 export default {
 	data() {
 		return {
-			// mainDataArray: this.$store.state.mainDataArray,
 			generatorProperty: {countZero: 1,countOne: 1, startFromOne: false},
 			chosenColor: `Black`
 		}
 	},
-	// props:[`mainDataArray`],
 	computed: {
 		countOfCurrentArray() {
 			let count;
@@ -88,7 +86,7 @@ export default {
 				let varArrayForSignal = this.$store.state.mainDataArray[item.id].value;
 				switch (interactMode) {
 					case 'invert':
-						varArrayForSignal[item.index] === 0 ? varArrayForSignal[item.index] = 1 : varArrayForSignal[item.index] = 0;							
+						varArrayForSignal[item.index] === 0 ? varArrayForSignal[item.index] = 1 : varArrayForSignal[item.index] = 0;
 					break;
 					case 'toOne':
 						varArrayForSignal[item.index] = 1;
@@ -126,7 +124,7 @@ export default {
 				alert('Пожалуйста, выставите положительные числа для генератора')
 				return
 			}
-			if (this.$store.state.signalsSelectedArr.length != 0) { 
+			if (this.$store.state.signalsSelectedArr.length != 0) {
 				let valueLength = this.$store.state.startInfoForTable.numOfTime;
 				let varArrayForGenerator = this.generatorCreateSignal(valueLength);
 				this.$store.state.mainDataArray.forEach((item)=>{
